@@ -16,15 +16,32 @@ const CourseList = () => {
   return (
     <div>
       <h2>Course Listing</h2>
-      <ul>
-        {courses.map(course => (
-          <li key={course.id}>
+      {courses.map(course => (
+        <div key={course.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px' }}>
+          <h3>
             <Link to={`/course/${course.id}`}>
-              {course.name} - {course.instructor}
+              {course.name}
             </Link>
-          </li>
-        ))}
-      </ul>
+          </h3>
+          <p><strong>Instructor:</strong> {course.instructor}</p>
+          <p><strong>Description:</strong> {course.description}</p>
+          <p><strong>Status:</strong> {course.enrollmentStatus}</p>
+          <p><strong>Duration:</strong> {course.duration}</p>
+          <p><strong>Schedule:</strong> {course.schedule}</p>
+          <p><strong>Location:</strong> {course.location}</p>
+          <p><strong>Prerequisites:</strong> {course.prerequisites.join(', ')}</p>
+          <details>
+            <summary><strong>Syllabus:</strong></summary>
+            <ul>
+              {course.syllabus.map(item => (
+                <li key={item.week}>
+                  <strong>Week {item.week}:</strong> {item.topic} - {item.content}
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      ))}
     </div>
   );
 }
