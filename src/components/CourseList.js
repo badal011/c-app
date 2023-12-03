@@ -3,12 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const CourseList = () => {
+const CourseList = ({ onEnroll }) => {
   const [courses, setCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Fetch courses from API
     axios.get('http://localhost:3001/courses')
       .then(response => setCourses(response.data))
       .catch(error => console.error('Error fetching courses:', error));
@@ -53,6 +52,9 @@ const CourseList = () => {
                     <p className="card-text"><strong>Status:</strong> {course.enrollmentStatus}</p>
                     <p className="card-text"><strong>Duration:</strong> {course.duration}</p>
                     <p className="card-text"><strong>Location:</strong> {course.location}</p>
+                    <button className="btn btn-primary" onClick={() => onEnroll(course.id)}>
+                      Enroll
+                    </button>
                   </div>
                 </div>
               </Link>
