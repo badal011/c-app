@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     // Fetch courses from API
@@ -13,88 +14,56 @@ const CourseList = () => {
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
 
+  const filteredCourses = courses.filter(course =>
+    course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.instructor.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-      {courses.length > 0 ? (
-        courses.map(course => (
-          <div key={course.id} style={styles.courseCard}>
-            <h3 style={styles.courseTitle}>
-              <Link to={`/course/${course.id}`} style={styles.courseLink}>
-                {course.name}
-              </Link>
-            </h3>
-            <img src={course.thumbnail} alt={course.name} style={styles.courseImage} />
-            <p><strong>Instructor:</strong> {course.instructor}</p>
-            <p><strong>Description:</strong> {course.description}</p>
-            <p><strong>Status:</strong> {course.enrollmentStatus}</p>
-            <p><strong>Duration:</strong> {course.duration}</p>
-            <p><strong>Schedule:</strong> {course.schedule}</p>
-            <p><strong>Location:</strong> {course.location}</p>
-
-            <details style={styles.syllabusDetails}>
-              <summary style={styles.summary}><strong>Syllabus:</strong></summary>
-              <ul>
-                {course.syllabus.map(item => (
-                  <li key={item.week}>
-                    <strong>Week {item.week}:</strong> {item.topic} - {item.content}
-                  </li>
-                ))}
-              </ul>
-            </details>
-
-            <div>
-              <h4>Students:</h4>
-              <ul>
-                {course.students.map(student => (
-                  <li key={student.id}>{student.name} - {student.email}</li>
-                ))}
-              </ul>
-            </div>
+    <div className="container mt-4">
+      <div className="row">
+        <div className="col-md-6">
+          <h2 className="mb-4">Courses</h2>
+        </div>
+        <div className="col-md-6">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search by name or instructor"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-secondary" type="button">
+              Search
+            </button>
           </div>
-        ))
-      ) : (
-        <p>No courses available.</p>
-      )}
+        </div>
+      </div>
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map(course => (
+            <div key={course.id} className="col mb-4">
+              <Link to={`/course/${course.id}`} className="text-decoration-none text-dark">
+                <div className="card h-100">
+                  <img src={course.thumbnail} alt={course.name} className="card-img-top" />
+                  <div className="card-body">
+                    <h5 className="card-title">{course.name}</h5>
+                    <p className="card-text"><strong>Instructor:</strong> {course.instructor}</p>
+                    <p className="card-text"><strong>Status:</strong> {course.enrollmentStatus}</p>
+                    <p className="card-text"><strong>Duration:</strong> {course.duration}</p>
+                    <p className="card-text"><strong>Location:</strong> {course.location}</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p className="col">No courses available.</p>
+        )}
+      </div>
     </div>
   );
 }
-
-const styles = {
-  courseCard: {
-    border: '1px solid #ccc',
-    padding: '10px',
-    margin: '10px',
-    maxWidth: '250px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.3s ease-in-out',
-
-    ':hover': {
-      transform: 'scale(1.05)',
-    },
-  },
-  courseTitle: {
-    marginBottom: '8px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-  },
-  courseLink: {
-    textDecoration: 'none',
-    color: '#333',
-  },
-  courseImage: {
-    maxWidth: '100%',
-    height: 'auto',
-    borderRadius: '8px',
-    marginBottom: '8px',
-  },
-  syllabusDetails: {
-    marginTop: '8px',
-  },
-  summary: {
-    cursor: 'pointer',
-    fontWeight: 'bold',
-  },
-};
 
 export default CourseList;
