@@ -1,53 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import CourseList from './CourseList';
+import React, { useState } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, Button } from 'react-bootstrap';
 
-const StudentDashboard = ({ enrolledCourses }) => {
-  const [username, setUsername] = useState('');
+const StudentDashboard = () => {
+  const [user, setUser] = useState(null);
+  const [modalShow, setModalShow] = useState(false);
 
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser && storedUser.username) {
-      setUsername(storedUser.username);
-    }
-  }, []);
-
-  const handleEnroll = async (courseId) => {
-    try {
-      const response = await axios.post(`http://localhost:3001/enroll/${courseId}`);
-      const updatedEnrolledCourses = response.data;
-
-      console.log('Enrollment successful!');
-      console.log('Updated enrolled courses:', updatedEnrolledCourses);
-    } catch (error) {
-      console.error('Error enrolling in the course:', error);
-    }
-  };
-
-  const handleUpdateUsername = () => {
-    const newUsername = prompt('Enter your new username:');
-    if (newUsername) {
-      // You can implement logic here to update the username in the backend or wherever it's stored
-      setUsername(newUsername);
-      // You might want to update the username in localStorage or send it to the server
-    }
+  const fetchUserProfile = () => {
+    // Fetch user data from the API
+    axios.get('http://localhost:3001/login')
+      .then(response => {
+        const userData = response.data[0];
+        setUser(userData);
+        setModalShow(true); // Show the modal after fetching data
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
   };
 
   return (
-    <div className="container mt-4">
-      <div className="text-end">
-        <p className="text-muted">
-          Welcome, {username}!
-          <button className="btn btn-link" onClick={handleUpdateUsername}>
-            Update Username
-          </button>
-        </p>
-      </div>
+    <div className="container mt-4 text-end">
+      <Button
+        variant="link"
+        size="lg"
+        onClick={fetchUserProfile}
+      >
+       profile
+      </Button>
 
-      <h2 className="mb-4">Student Dashboard</h2>
-
-      <CourseList onEnroll={handleEnroll} />
+      {/* Profile Modal */}
+      <Modal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Profile</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {user && (
+            <div>
+              <p>ID: {user.id}</p>
+              <p>Username: {user.username}</p>
+              <p>First Name: {user.firstname}</p>
+              <p>Last Name: {user.lastname}</p>
+              <p>Email: {user.email}</p>
+              {/* Add other user information as needed */}
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
