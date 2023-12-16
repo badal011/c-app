@@ -77,7 +77,7 @@ const CourseDetail = () => {
           </div>
 
           {/* Back button to navigate to the course list */}
-          <Link to="/courses" className="btn btn-outline-secondary mt-3 me-3">
+          <Link to="/dashboard" className="btn btn-outline-secondary mt-3 me-3">
             Back
           </Link>
 

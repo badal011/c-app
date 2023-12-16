@@ -1,7 +1,7 @@
 // App.js
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CourseList from './components/CourseList';
+
 import CourseDetails from './components/CourseDetails';
 import StudentDashboard from './components/StudentDashboard';
 import Login from './components/Login';
@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login/>} />
         <Route path="/r" element={<Register/>} />
-        <Route path="/courses" element={<CourseList/>} />
+        
         <Route path="/course/:id" element={<CourseDetails/>} />
         <Route path="/dashboard" element={<StudentDashboard/>} />
       </Routes>
