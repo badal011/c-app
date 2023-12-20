@@ -16,7 +16,7 @@ const LoginPage = () => {
     // Fetch data from JSON server and store it in localStorage
     const fetchData = async () => {
       try {
-        const response = await fetch(' http://localhost:3001/login');
+        const response = await fetch(' https://65828ae402f747c836798beb.mockapi.io/badal');
         const data = await response.json();
         localStorage.setItem('users', JSON.stringify(data));
       } catch (error) {
